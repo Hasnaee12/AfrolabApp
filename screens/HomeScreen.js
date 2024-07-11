@@ -32,14 +32,12 @@ const HomeScreen = ({ navigation }) => {
     fetchemployeeData();
   }, []);
   const handleLogout = () => {
-    // Logique de déconnexion ici, comme réinitialiser les états ou naviguer vers l'écran de connexion
-    // Exemple: réinitialiser les états et naviguer vers l'écran de connexion
+    
     setemployeeName('');
     setemployeeId('');
     setemployeeDepartment('');
     setemployeeDepartmentId(null);
-    // Naviguer vers l'écran de connexion
-    navigation.navigate('Login'); // Remplacez 'Login' par le nom de votre écran de connexion
+    navigation.navigate('Login'); 
   };
 
 

@@ -11,10 +11,9 @@ const LoginScreen = ({ navigation, setUserRole }) => {
     try {
       const response = await api.post('/login', { email, password });
       if (response.data.message === 'Login successful') {
-        // Determine user role based on your application logic
-        const userRole = response.data.role; // Example: 'admin', 'superuser', 'employee'
-        const name = response.data.name; // Example: 'admin', 'superuser', 'employee'
-        const departmentName = response.data.departmentName; // Example extraction of departmentName
+        const userRole = response.data.role; 
+        const name = response.data.name; 
+        const departmentName = response.data.departmentName; 
         setUserRole(userRole);
 
         // Navigate to appropriate screen based on role
