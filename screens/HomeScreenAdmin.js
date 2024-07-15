@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ImageBackground, Image,ScrollView } from 'react-native';
 import api from '../api';
 
-const HomeScreenAdmin = ({ navigation }) => {
-  const [adminName, setAdminName] = useState('');
+const HomeScreenAdmin = ({ route,navigation }) => {
+  const {name } = route.params;
+  const [adminName, setAdminName] = useState(name);
 
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
         // Fetch admin
-        const adminResponse = await api.get('/collaborators?role=admin');
-        const admin = adminResponse.data[0];
-        setAdminName(admin.name);
+        setAdminName(name);
       } catch (error) {
         console.error(error);
       }
@@ -52,10 +51,10 @@ const HomeScreenAdmin = ({ navigation }) => {
                 <Text style={styles.buttonText}>Manage Employees</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewDepartmentResponsibles')}>
-                <Text style={styles.buttonText}>View Department Responsibles</Text>
+                <Text style={styles.buttonText}>View Department Managers</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageDepartmentResponsibles')}>
-                <Text style={styles.buttonText}>Manage Department Responsibles</Text>
+                <Text style={styles.buttonText}>Manage Department Managers</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEquipment')}>
                 <Text style={styles.buttonText}>Manage Equipment</Text>

@@ -9,7 +9,7 @@ const ViewEmployeeScreen = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await api.get('/collaborators?role=superuser'); // Assurez-vous que votre API retourne tous les employés avec toutes les informations nécessaires
+        const response = await api.get('/collaborators?role=superuser'); 
         setEmployees(response.data);
       } catch (error) {
         console.error(error);
@@ -17,7 +17,18 @@ const ViewEmployeeScreen = () => {
     };
     fetchEmployees();
   }, []);
-
+const getDepartmentName = (departmentId) => {
+  switch (departmentId) {
+    case 1:
+      return 'Technique';
+    case 2:
+      return 'Commercial';
+    case 3:
+      return 'Financier';
+    default:
+      return 'Unknown';
+  }
+};
   return (
     <LinearGradient
       colors={['#FF8C04', '#0BECFB']}
@@ -27,7 +38,7 @@ const ViewEmployeeScreen = () => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Employee List</Text>
+          <Text style={styles.title}>Managers List</Text>
           <FlatList
             data={employees}
             keyExtractor={(item) => item.id.toString()}
@@ -38,6 +49,8 @@ const ViewEmployeeScreen = () => {
                 <Text>Phone: {item.phone_number}</Text>
                 <Text>Role: {item.role}</Text>
                 <Text>Password: {item.password}</Text>
+                <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
+
               </View>
             )}
           />

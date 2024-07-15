@@ -51,8 +51,9 @@ const ViewEmployeeAdmin = ({ route }) => {
                 <Text>Email: {item.email}</Text>
                 <Text>Phone: {item.phone_number}</Text>
                 <Text>Role: {item.role}</Text>
-                <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
                 <Text>Password: {item.password}</Text>
+                <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
+                
               </View>
             )}
           />

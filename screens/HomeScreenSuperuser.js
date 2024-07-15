@@ -2,29 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ImageBackground, Image } from 'react-native';
 import api from '../api';
 
-const HomeScreenSuperuser = ({ navigation }) => {
-  const [superuserName, setSuperuserName] = useState('');
+const HomeScreenSuperuser = ({ navigation,route }) => {
+  const {name , userId ,department_id,departmentName} = route.params;
+  const [superuserName, setSuperuserName] = useState(name);
   const [superuserDepartment, setSuperuserDepartment] = useState('');
   const [superuserDepartmentId, setSuperuserDepartmentId] = useState(null); // Ajout du state pour l'ID du département
 
   useEffect(() => {
     const fetchSuperuserData = async () => {
       try {
-        // Fetch departments
-        const departmentsResponse = await api.get('/departments');
-        const departments = departmentsResponse.data;
-
-        // Fetch superuser
-        const superuserResponse = await api.get('/collaborators?role=superuser');
-        const superuser = superuserResponse.data[0];
-
-        setSuperuserName(superuser.name);
-
-        // Find the department of the superuser
-        const department = departments.find(dept => dept.id === superuser.department_id);
-        setSuperuserDepartment(department ? department.name : 'Unknown Department');
-        setSuperuserDepartmentId(superuser.department_id); // Set department ID
-
+        setSuperuserName(name);
+        setSuperuserDepartment(departmentName);
+        setSuperuserDepartmentId(department_id); 
       } catch (error) {
         console.error(error);
       }
@@ -60,10 +49,10 @@ const HomeScreenSuperuser = ({ navigation }) => {
               source={require('../assets/LOGO-AFROLAB-2.jpg')}
               style={styles.image}
             />
-            <Text style={styles.title}>{`${superuserDepartment} Responsible Dashboard`}</Text>
+            <Text style={styles.title}>{`${superuserDepartment} Manager Dashboard`}</Text>
             <Text style={styles.subtitle}>{`Welcome, ${superuserName}`}</Text>
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeSuperuser')}>
+              <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeSuperuser',departmentName)}>
                 <Text style={styles.buttonText}>View Employees</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEmployeeSuperuser')}>

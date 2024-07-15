@@ -12,12 +12,26 @@ const ViewEmployeeScreen = ({ route }) => {
       try {
         const response = await api.get(`/collaborators?role=employee&department_id=${userDepartmentId}`);
         setEmployees(response.data);
+        
       } catch (error) {
         console.error(error);
       }
     };
     fetchEmployees();
   }, []);
+// Function to get the department name based on the department ID
+const getDepartmentName = (departmentId) => {
+  switch(departmentId) {
+    case 1:
+      return 'Technique';
+    case 2:
+      return 'Commercial';
+    case 3:
+      return 'Financier';
+    default:
+      return 'Unknown';
+  }
+};
 
   return (
     <LinearGradient
@@ -39,6 +53,7 @@ const ViewEmployeeScreen = ({ route }) => {
                 <Text>Phone: {item.phone_number}</Text>
                 <Text>Role: {item.role}</Text>
                 <Text>Password: {item.password}</Text>
+                <Text>Department: {getDepartmentName(item.department_id)}</Text>
               </View>
             )}
           />

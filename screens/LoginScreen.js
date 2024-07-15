@@ -13,16 +13,19 @@ const LoginScreen = ({ navigation, setUserRole }) => {
       if (response.data.message === 'Login successful') {
         const userRole = response.data.role; 
         const name = response.data.name; 
-        const departmentName = response.data.departmentName; 
+        const department_id = response.data.department_id;
+        const userId = response.data.userId; 
+        const departmentName = response.data.departmentName;
+        
         setUserRole(userRole);
 
         // Navigate to appropriate screen based on role
         if (userRole === 'employee') {
-          navigation.navigate('Home', { name });
+          navigation.navigate('Home', { userId , name , department_id,departmentName});
         } else if (userRole === 'admin') {
           navigation.navigate('HomeScreenAdmin', {  name });
         } else if (userRole === 'superuser') {
-          navigation.navigate('HomeScreenSuperuser', {  departmentName });
+          navigation.navigate('HomeScreenSuperuser', {  name, department_id ,userId,departmentName});
         }
       } else {
         Alert.alert('Login Failed', response.data.message);

@@ -2,28 +2,33 @@ import React,{ useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable ,ImageBackground,Image} from 'react-native';
 import api from '../api';
 
-const HomeScreen = ({ navigation }) => {
-  const [employeeName, setemployeeName] = useState('');
-  const [employeeId, setemployeeId] = useState('');
-  const [employeeDepartment, setemployeeDepartment] = useState('');
-  const [employeeDepartmentId, setemployeeDepartmentId] = useState(null); // Ajout du state pour l'ID du département
+const HomeScreen = ({ navigation,route }) => {
+  const {name , userId ,department_id,departmentName} = route.params;
+  const [employeeName, setemployeeName] = useState(name);
+  const [employeeId, setemployeeId] = useState(userId);
+  const [employeeDepartment, setemployeeDepartment] = useState(departmentName);
+  const [employeeDepartmentId, setemployeeDepartmentId] = useState(department_id); // Ajout du state pour l'ID du département
   useEffect(() => {
     const fetchemployeeData = async () => {
       try {
         // Fetch departments
-        const departmentsResponse = await api.get('/departments');
-        const departments = departmentsResponse.data;
+        //const departmentsResponse = await api.get('/departments');
+        //const departments = departmentsResponse.data;
 
-        // Fetch employee
-        const employeeResponse = await api.get('/collaborators?role=employee');
-        const employee = employeeResponse.data[0];
+        // Fetch employee data
+        //const employeeResponse = await api.get(`/collaborators?id=${userId}`);
+        //const employee = employeeResponse.data;
+// Find the department of the employee
+        //const department = departments.find(dept => dept.id === employee.department_id);
+        //setemployeeDepartment(department ? department.name : 'Unknown ');
+        //setemployeeDepartmentId(employee.department_id); // Set department ID
+        
+        setemployeeName(name);
+        setemployeeId(userId);
+        setemployeeDepartment(departmentName);
+        setemployeeDepartmentId(department_id);
+        
 
-        setemployeeName(employee.name);
-        setemployeeId(employee.id);
-        // Find the department of the employee
-        const department = departments.find(dept => dept.id === employee.department_id);
-        setemployeeDepartment(department ? department.name : 'Unknown Department');
-        setemployeeDepartmentId(employee.department_id); // Set department ID
 
       } catch (error) {
         console.error(error);
@@ -55,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
             />
         <Text style={styles.subtitle}>{`Welcome, ${employeeName}`}</Text>
 
-          <Text style={styles.title}>Tasks for {employeeDepartment} Department</Text>
+          <Text style={styles.title}>{`Tasks for  ${employeeDepartment} ${employeeId} Department`}</Text>
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Tasks', { employeeDepartmentId,employeeDepartment,employeeId })}
