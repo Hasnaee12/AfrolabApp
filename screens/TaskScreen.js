@@ -24,7 +24,6 @@ const TaskScreen = ({ route, navigation }) => {
     const fetchData = async () => {
       try {
         const taskResponse = await api.get(`/task_definitions?department_id=${employeeDepartmentId}`);
-        console.log('Task Definitions:', taskResponse.data);
         setTaskDefinitions(taskResponse.data);
 
         if (employeeDepartmentId === 1) {
@@ -48,6 +47,9 @@ const TaskScreen = ({ route, navigation }) => {
         const seconds = date.getSeconds().toString().padStart(2, '0');
         return `${hours}:${minutes}:${seconds}`;
       };
+      // Debugging: Log formatted times
+      console.log("Formatted start time:", formatTime(startTime));
+      console.log("Formatted end time:", formatTime(endTime));
 
       const task = {
         task_definition_id: selectedTaskDefinition,
@@ -72,7 +74,7 @@ const TaskScreen = ({ route, navigation }) => {
         setLocation('');
         setStartTime(new Date());
         setEndTime(new Date());
-        navigation.navigate('Reports');
+        navigation.navigate('Reports',{employeeDepartmentId, employeeDepartment, employeeId});
       }
     } catch (error) {
       console.error('Error saving tasks:', error);

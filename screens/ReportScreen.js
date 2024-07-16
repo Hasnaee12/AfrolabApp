@@ -7,7 +7,7 @@ const ReportsScreen = ({ route }) => {
   const [tasks, setTasks] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [employeeName, setEmployeeName] = useState('');
-  const { employeeDepartment, employeeId } = route.params;
+  const {  employeeDepartmentId,employeeDepartment,employeeId } = route.params;
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -21,7 +21,7 @@ const ReportsScreen = ({ route }) => {
         setAttendance(attendanceResponse.data);
 
         // Fetch employee details
-        const employeeResponse = await api.get(`/employees/${employeeId}`);
+        const employeeResponse = await api.get(`/collaborators?collaborator_id=${employeeId}`);
         setEmployeeName(employeeResponse.data.name);
       } catch (error) {
         console.error('Error fetching reports:', error);

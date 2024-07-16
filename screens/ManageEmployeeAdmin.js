@@ -3,13 +3,14 @@ import { View, Text, TextInput, StyleSheet, Pressable, Alert, FlatList } from 'r
 import api from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const ManageEmployeeScreen = ({ route }) => {
+const ManageEmployeeAdmin = ({ route }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone_number, setphone_number] = useState('');
   const [role, setRole] = useState('');
-  const [Password, setPassword] = useState('');
+  const [password, setpassword] = useState('');
   const [collaborators, setCollaborators] = useState([]);
+  const [department_id, setDepartment_id] = useState('');
   const [editingId, setEditingId] = useState(null);
  // const { userDepartmentId } = route.params;
   useEffect(() => {
@@ -28,18 +29,21 @@ const ManageEmployeeScreen = ({ route }) => {
 
   const handleAddOrUpdateEmployee = async () => {
     try {
+      const collaboratorData = { name, email, password, phone_number, role: 'employee', department_id};
+      console.log('Sending data:', collaboratorData);
       if (editingId) {
-        await api.put(`/collaborators/${editingId}`, { name, email,Password, phone_number: phone, role: 'employee', department_id: userDepartmentId });
+        await api.put(`/collaborators/${editingId}`, collaboratorData);
         Alert.alert('Success', 'Employee updated successfully');
       } else {
-        await api.post('/collaborators', { name, email, Password, phone_number: phone, role: 'employee', department_id: userDepartmentId });
+        await api.post('/collaborators', collaboratorData);
         Alert.alert('Success', 'Employee added successfully');
       }
+
       setName('');
       setEmail('');
-      setPhone('');
-      setRole('');
-      setPassword('');
+      setpassword('');
+      setphone_number('');
+      setDepartment_id('');
       setEditingId(null);
       fetchCollaborators();
     } catch (error) {
@@ -51,9 +55,9 @@ const ManageEmployeeScreen = ({ route }) => {
   const handleEdit = (collaborator) => {
     setName(collaborator.name);
     setEmail(collaborator.email);
-    setPhone(collaborator.phone_number);
-    setRole(collaborator.role);
-    setPassword(collaborator.password);
+    setpassword(collaborator.password); 
+    setphone_number(collaborator.phone_number);
+    setDepartment_id(collaborator.department_id);
     setEditingId(collaborator.id);
   };
 
@@ -104,15 +108,21 @@ const ManageEmployeeScreen = ({ route }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Phone"
-            value={phone}
-            onChangeText={setPhone}
+            placeholder="Password"
+            value={password}
+            onChangeText={setpassword} 
           />
           <TextInput
             style={styles.input}
-            placeholder="Role"
-            value={role}
-            onChangeText={setRole}
+            placeholder="phone number"
+            value={phone_number}
+            onChangeText={setphone_number}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="department ID"
+            value={department_id}
+            onChangeText={setDepartment_id}
           />
           <Pressable style={styles.button} onPress={handleAddOrUpdateEmployee}>
             <Text style={styles.buttonText}>{editingId ? 'Update Employee' : 'Add Employee'}</Text>
@@ -206,4 +216,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManageEmployeeScreen;
+export default ManageEmployeeAdmin;

@@ -47,7 +47,7 @@ const getDepartmentName = (departmentId) => {
                 <Text>Name: {item.name}</Text>
                 <Text>Email: {item.email}</Text>
                 <Text>Phone: {item.phone_number}</Text>
-                <Text>Role: {item.role}</Text>
+                <Text>Role: Manager</Text>
                 <Text>Password: {item.password}</Text>
                 <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
 

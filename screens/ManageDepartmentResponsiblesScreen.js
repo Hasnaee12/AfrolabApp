@@ -6,10 +6,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 const ManageDepartmentResponsiblesScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [departmentId, setDepartmentId] = useState('');
-  const [Password, setPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone_number, setphone_number] = useState('');
+  const [password, setpassword] = useState('');
+  const [department_id, setDepartment_id] = useState('');
   const [responsibles, setResponsibles] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
@@ -29,18 +28,21 @@ const ManageDepartmentResponsiblesScreen = () => {
 
   const handleAddOrUpdateResponsible = async () => {
     try {
+      const collaboratorData = { name, email, password, phone_number, role: 'superuser', department_id};
+      console.log('Sending data:', collaboratorData);
       if (editingId) {
-        await api.put(`/collaborators/${editingId}`, { name, email,Password, phone_number: phone, department_id: departmentId, role: 'superuser' });
-        Alert.alert('Success', 'Department Responsible updated successfully');
+        await api.put(`/collaborators/${editingId}`, collaboratorData);
+        Alert.alert('Success', 'Employee updated successfully');
       } else {
-        await api.post('/collaborators', { name, email, Password, phone_number: phone, department_id: departmentId, role: 'superuser' });
-        Alert.alert('Success', 'Department Responsible added successfully');
+        await api.post('/collaborators', collaboratorData);
+        Alert.alert('Success', 'Employee added successfully');
       }
+
       setName('');
       setEmail('');
-      setPhone('');
-      setRole('');
-      setPassword('');
+      setpassword('');
+      setphone_number('');
+      setDepartment_id('');
       setEditingId(null);
       fetchResponsibles();
     } catch (error) {
@@ -52,10 +54,9 @@ const ManageDepartmentResponsiblesScreen = () => {
   const handleEdit = (responsible) => {
     setName(responsible.name);
     setEmail(responsible.email);
-    setDepartmentId(responsible.department_id);
-    setPhone(collaborator.phone_number);
-    setRole(collaborator.role);
-    setPassword(collaborator.password);
+    setpassword(responsible.password); 
+    setphone_number(responsible.phone_number);
+    setDepartment_id(responsible.department_id);
     setEditingId(responsible.id);
   };
 
@@ -91,7 +92,7 @@ const ManageDepartmentResponsiblesScreen = () => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Manage Department Responsibles</Text>
+          <Text style={styles.title}>Manage Department Managers</Text>
           <TextInput
             style={styles.input}
             placeholder="Name"
@@ -106,9 +107,21 @@ const ManageDepartmentResponsiblesScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Department ID"
-            value={departmentId}
-            onChangeText={setDepartmentId}
+            placeholder="Password"
+            value={password}
+            onChangeText={setpassword} 
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="phone number"
+            value={phone_number}
+            onChangeText={setphone_number}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="department ID"
+            value={department_id}
+            onChangeText={setDepartment_id}
           />
           <Pressable style={styles.button} onPress={handleAddOrUpdateResponsible}>
             <Text style={styles.buttonText}>{editingId ? 'Update Responsible' : 'Add Responsible'}</Text>

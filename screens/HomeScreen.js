@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation,route }) => {
             />
         <Text style={styles.subtitle}>{`Welcome, ${employeeName}`}</Text>
 
-          <Text style={styles.title}>{`Tasks for  ${employeeDepartment} ${employeeId} Department`}</Text>
+          <Text style={styles.title}>{`Tasks for  ${employeeDepartment}  Department`}</Text>
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Tasks', { employeeDepartmentId,employeeDepartment,employeeId })}

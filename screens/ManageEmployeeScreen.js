@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable, Alert, FlatList } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Pressable, Alert, FlatList, ScrollView } from 'react-native';
 import api from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const ManageEmployeeScreen = ({ route }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [role, setRole] = useState('');
-  const [Password, setPassword] = useState('');
+  const [phone_number, setphone_number] = useState('');
+  const [password, setPassword] = useState(''); // Corrected to setPassword
   const [collaborators, setCollaborators] = useState([]);
+  const [department_id, setDepartment_id] = useState('');
   const [editingId, setEditingId] = useState(null);
   const { userDepartmentId } = route.params;
+
   useEffect(() => {
     fetchCollaborators();
   }, []);
@@ -28,18 +29,22 @@ const ManageEmployeeScreen = ({ route }) => {
 
   const handleAddOrUpdateEmployee = async () => {
     try {
+      const collaboratorData = { name, email, password, phone_number, role: 'employee', department_id: userDepartmentId };
+      console.log('Sending data:', collaboratorData);
+
       if (editingId) {
-        await api.put(`/collaborators/${editingId}`, { name, email,Password, phone_number: phone, role: 'employee', department_id: userDepartmentId });
+        await api.put(`/collaborators/${editingId}`, collaboratorData);
         Alert.alert('Success', 'Employee updated successfully');
       } else {
-        await api.post('/collaborators', { name, email, Password, phone_number: phone, role: 'employee', department_id: userDepartmentId });
+        await api.post('/collaborators', collaboratorData);
         Alert.alert('Success', 'Employee added successfully');
       }
+
       setName('');
       setEmail('');
-      setPhone('');
-      setRole('');
       setPassword('');
+      setphone_number('');
+      setDepartment_id('');
       setEditingId(null);
       fetchCollaborators();
     } catch (error) {
@@ -51,9 +56,9 @@ const ManageEmployeeScreen = ({ route }) => {
   const handleEdit = (collaborator) => {
     setName(collaborator.name);
     setEmail(collaborator.email);
-    setPhone(collaborator.phone_number);
-    setRole(collaborator.role);
-    setPassword(collaborator.password);
+    setPassword(collaborator.password); // Corrected to setPassword
+    setphone_number(collaborator.phone_number);
+    setDepartment_id(collaborator.department_id);
     setEditingId(collaborator.id);
   };
 
@@ -88,7 +93,7 @@ const ManageEmployeeScreen = ({ route }) => {
       style={styles.gradientBackground}
     >
       <View style={styles.overlay}>
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>Manage Employees</Text>
           <TextInput
             style={styles.input}
@@ -104,16 +109,17 @@ const ManageEmployeeScreen = ({ route }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Phone"
-            value={phone}
-            onChangeText={setPhone}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword} 
           />
           <TextInput
             style={styles.input}
-            placeholder="Role"
-            value={role}
-            onChangeText={setRole}
+            placeholder="phone_number"
+            value={phone_number}
+            onChangeText={setphone_number}
           />
+
           <Pressable style={styles.button} onPress={handleAddOrUpdateEmployee}>
             <Text style={styles.buttonText}>{editingId ? 'Update Employee' : 'Add Employee'}</Text>
           </Pressable>
@@ -123,7 +129,7 @@ const ManageEmployeeScreen = ({ route }) => {
             keyExtractor={(item) => item.id.toString()}
             style={styles.list}
           />
-        </View>
+        </ScrollView>
       </View>
     </LinearGradient>
   );
@@ -137,13 +143,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  scrollContainer: {
+    justifyContent: 'Z',
     alignItems: 'center',
-    padding: 16,
+    padding: 10,
     width: '100%',
   },
   title: {
@@ -161,6 +165,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
+    
   },
   button: {
     borderRadius: 10,
