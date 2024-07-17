@@ -21,7 +21,7 @@ const ReportsScreen = ({ route }) => {
         setAttendance(attendanceResponse.data);
 
         // Fetch employee details
-        const employeeResponse = await api.get(`/collaborators?collaborator_id=${employeeId}`);
+        const employeeResponse = await api.get(`/collaborators?id=${employeeId}`);
         setEmployeeName(employeeResponse.data.name);
       } catch (error) {
         console.error('Error fetching reports:', error);
@@ -34,8 +34,8 @@ const ReportsScreen = ({ route }) => {
   // Fetch task definition details by ID
   const fetchTaskDefinition = async (taskDefinitionId) => {
     try {
-      const response = await api.get(`/task_definitions/${taskDefinitionId}`);
-      return response.data.name; // Assuming 'name' is the property of task definition
+      const response = await api.get(`/task_definitions?id=${taskDefinitionId}`);
+      return response.data.name; 
     } catch (error) {
       console.error(`Error fetching task definition ${taskDefinitionId} details:`, error);
       return 'Unknown Task';
@@ -45,8 +45,8 @@ const ReportsScreen = ({ route }) => {
   // Fetch equipment details by ID
   const fetchEquipmentName = async (equipmentId) => {
     try {
-      const response = await api.get(`/equipment/${equipmentId}`);
-      return response.data.name; // Assuming 'name' is the property of equipment
+      const response = await api.get(`/equipment?id=${equipmentId}`);
+      return response.data.name; 
     } catch (error) {
       console.error(`Error fetching equipment ${equipmentId} details:`, error);
       return 'Unknown Equipment';

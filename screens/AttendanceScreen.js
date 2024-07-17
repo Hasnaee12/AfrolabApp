@@ -5,19 +5,26 @@ import api from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const AttendanceScreen = ({ navigation }) => {
+const AttendanceScreen = ({ route,navigation }) => {
   const [status, setStatus] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const { employeeId ,employeeDepartment} = route.params;  
 
   const handleAddAttendance = async () => {
     try {
-      const response = await api.post('/attendance', { status, date: selectedDate });
-      if (response.data.message === 'Attendance added successfully') {
+      const response = await api.post('/attendance', { 
+        status, 
+        date: selectedDate, 
+        collaborator_id: employeeId  // Include collaborator_id in the request payload
+      });
+      if (response.status === 201 && response.data.message === 'Attendance recorded successfully') {
         Alert.alert('Success', 'Attendance added successfully');
         setStatus('');
-        setSelectedDate(new Date()); // Réinitialise la date sélectionnée
-        navigation.navigate('Reports', { selectedDate }); // Passe la date sélectionnée à la page Reports
+        setSelectedDate(new Date());  // Reset the selected date
+        navigation.navigate('Reports', { employeeId,employeeDepartment });  // Navigate to the Reports screen with the employeeId
+      } else {
+        Alert.alert('Error', 'Unexpected response from the server');
       }
     } catch (error) {
       console.error(error);
@@ -41,6 +48,7 @@ const AttendanceScreen = ({ navigation }) => {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>Record Attendance</Text>
+          <View style={styles.pickerContainer}>
           <Pressable onPress={() => setShowDatePicker(true)}>
             <Text style={styles.dateLabel}>
               Selected Date: {selectedDate.toLocaleDateString()}
@@ -53,8 +61,10 @@ const AttendanceScreen = ({ navigation }) => {
               is24Hour={true}
               display="default"
               onChange={handleDateChange}
+              
             />
           )}
+          </View>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={status}
@@ -100,18 +110,20 @@ const styles = StyleSheet.create({
   },
   dateLabel: {
     fontSize: 18,
-    marginBottom: 10,
-    color: '#FFF', // White text
+    marginBottom: 0,
+    marginVertical: 10,
+    color: '#000', // White text
     textAlign: 'center',
+    height: 40,
   },
   pickerContainer: {
     borderRadius: 10,
     backgroundColor: '#FFF',
-    marginBottom: 12,
+    marginBottom: 20,
     paddingHorizontal: 8,
   },
   picker: {
-    height: 40,
+    height: 60,
     color: '#000', // Black text
   },
   button: {
