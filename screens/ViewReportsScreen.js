@@ -17,7 +17,7 @@ const ReportScreen = ({ route }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await api.get('/tasks', { params: { department } });
+        const response = await api.get('/tasks');
         setTasks(response.data);
         } catch (error) {
         console.error(error);

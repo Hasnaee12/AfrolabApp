@@ -42,7 +42,7 @@ const HomeScreenAdmin = ({ route,navigation }) => {
               resizeMode="contain"
             />
             <Text style={styles.title}>Admin Dashboard</Text>
-            <Text style={styles.subtitle}>{`Welcome, ${adminName}`}</Text>
+            <Text style={styles.subtitle}>{`Welcome, M. ${adminName}`}</Text>
             <View style={styles.buttonContainer}>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeAdmin')}>
                 <Text style={styles.buttonText}>View Employees</Text>

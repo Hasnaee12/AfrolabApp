@@ -50,7 +50,7 @@ const HomeScreenSuperuser = ({ navigation,route }) => {
               style={styles.image}
             />
             <Text style={styles.title}>{`${superuserDepartment} Manager Dashboard`}</Text>
-            <Text style={styles.subtitle}>{`Welcome, ${superuserName}`}</Text>
+            <Text style={styles.subtitle}>{`Welcome, M. ${superuserName}`}</Text>
             <View style={styles.buttonContainer}>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeSuperuser',departmentName)}>
                 <Text style={styles.buttonText}>View Employees</Text>

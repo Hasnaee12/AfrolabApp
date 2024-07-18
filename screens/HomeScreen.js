@@ -11,17 +11,6 @@ const HomeScreen = ({ navigation,route }) => {
   useEffect(() => {
     const fetchemployeeData = async () => {
       try {
-        // Fetch departments
-        //const departmentsResponse = await api.get('/departments');
-        //const departments = departmentsResponse.data;
-
-        // Fetch employee data
-        //const employeeResponse = await api.get(`/collaborators?id=${userId}`);
-        //const employee = employeeResponse.data;
-// Find the department of the employee
-        //const department = departments.find(dept => dept.id === employee.department_id);
-        //setemployeeDepartment(department ? department.name : 'Unknown ');
-        //setemployeeDepartmentId(employee.department_id); // Set department ID
         
         setemployeeName(name);
         setemployeeId(userId);
@@ -75,9 +64,9 @@ const HomeScreen = ({ navigation,route }) => {
           </Pressable>
           <Pressable
             style={styles.button}
-            onPress={() => navigation.navigate('Reports', { employeeDepartmentId,employeeDepartment,employeeId })}
+            onPress={() => navigation.navigate('Reports', { employeeDepartmentId,employeeDepartment,employeeId,employeeName })}
           >
-            <Text style={styles.buttonText}>View Report</Text>
+            <Text style={styles.buttonText}>View Saved Tasks</Text>
           </Pressable>
           {/* Bouton de logout */}
           <Pressable style={styles.logoutButton} onPress={handleLogout}>
