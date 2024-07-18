@@ -274,18 +274,15 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    marginTop: 20,
-    backgroundColor: '#FFF',
-    width: '100%',
-    alignSelf: 'center',
+    padding: 15,
+    marginVertical: 10,
+    alignItems: 'center',
+    backgroundColor: '#FFD700',
   },
   buttonText: {
-    fontSize: 20,
-    color: '#000',
+    color: '#FFF',
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
 });
 

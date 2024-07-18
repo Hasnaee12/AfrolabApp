@@ -173,9 +173,9 @@ const ReportsScreen = ({ route }) => {
   const handleSaveReport = async () => {
     const report = {
       date: new Date(),
-      employeeId,
       tasks,
       attendance,
+      collaborator_id: employeeId,
     };
 
     try {
