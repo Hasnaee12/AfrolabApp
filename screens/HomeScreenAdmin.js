@@ -41,26 +41,26 @@ const HomeScreenAdmin = ({ route,navigation }) => {
               style={styles.image}
               resizeMode="contain"
             />
-            <Text style={styles.title}>Admin Dashboard</Text>
-            <Text style={styles.subtitle}>{`Welcome, M. ${adminName}`}</Text>
+            <Text style={styles.title}>Tableau de bord de l'Admin </Text>
+            <Text style={styles.subtitle}>{`Bienvenue, M. ${adminName}`}</Text>
             <View style={styles.buttonContainer}>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeAdmin')}>
-                <Text style={styles.buttonText}>View Employees</Text>
+                <Text style={styles.buttonText}>Voir les employés</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEmployeeAdmin')}>
-                <Text style={styles.buttonText}>Manage Employees</Text>
+                <Text style={styles.buttonText}>Gérer les employés</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewDepartmentResponsibles')}>
-                <Text style={styles.buttonText}>View Department Managers</Text>
+                <Text style={styles.buttonText}>Voir les chefs de département</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageDepartmentResponsibles')}>
-                <Text style={styles.buttonText}>Manage Department Managers</Text>
+                <Text style={styles.buttonText}>Gérer les chefs de département</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEquipment')}>
-                <Text style={styles.buttonText}>Manage Equipment</Text>
+                <Text style={styles.buttonText}>Gérer les Articles</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewReportsAdmin')}>
-                <Text style={styles.buttonText}>View Reports</Text>
+                <Text style={styles.buttonText}>Voir les rapports</Text>
               </Pressable>
               {/* Bouton de logout */}
           <Pressable style={styles.logoutButton} onPress={handleLogout}>

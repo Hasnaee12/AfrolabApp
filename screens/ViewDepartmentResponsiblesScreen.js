@@ -38,18 +38,18 @@ const getDepartmentName = (departmentId) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Managers List</Text>
+          <Text style={styles.title}>Liste des Managers </Text>
           <FlatList
             data={employees}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.item}>
-                <Text>Name: {item.name}</Text>
+                <Text>Nom: {item.name}</Text>
                 <Text>Email: {item.email}</Text>
-                <Text>Phone: {item.phone_number}</Text>
+                <Text>TéléPhone: {item.phone_number}</Text>
                 <Text>Role: Manager</Text>
-                <Text>Password: {item.password}</Text>
-                <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
+                <Text>Mot de passe: {item.password}</Text>
+                <Text>Nom de Département : {getDepartmentName(item.department_id)}</Text>
 
               </View>
             )}

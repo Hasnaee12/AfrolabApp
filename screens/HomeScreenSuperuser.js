@@ -49,20 +49,20 @@ const HomeScreenSuperuser = ({ navigation,route }) => {
               source={require('../assets/LOGO-AFROLAB-2.jpg')}
               style={styles.image}
             />
-            <Text style={styles.title}>{`${superuserDepartment} Manager Dashboard`}</Text>
-            <Text style={styles.subtitle}>{`Welcome, M. ${superuserName}`}</Text>
+            <Text style={styles.title}>{`Tableau de bord du Manager de département ${superuserDepartment}  `}</Text>
+            <Text style={styles.subtitle}>{`Bienvenue, M. ${superuserName}`}</Text>
             <View style={styles.buttonContainer}>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewEmployeeSuperuser',departmentName)}>
-                <Text style={styles.buttonText}>View Employees</Text>
+                <Text style={styles.buttonText}>Voir les employés</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEmployeeSuperuser')}>
-                <Text style={styles.buttonText}>Manage Employees</Text>
+                <Text style={styles.buttonText}>Gérer les employés</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ManageDefinedTask')}>
-                <Text style={styles.buttonText}>Manage Defined Tasks</Text>
+                <Text style={styles.buttonText}>Gérer les tâches définies</Text>
               </Pressable>
               <Pressable style={styles.button} onPress={() => navigateTo('ViewReportsSuperuser')}>
-                <Text style={styles.buttonText}>View Reports</Text>
+                <Text style={styles.buttonText}>Afficher les rapports</Text>
               </Pressable>
                {/* Bouton de logout */}
           <Pressable style={styles.logoutButton} onPress={handleLogout}>

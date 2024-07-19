@@ -47,26 +47,26 @@ const HomeScreen = ({ navigation,route }) => {
               source={require('../assets/LOGO-AFROLAB-2.jpg')}
               style={styles.image}
             />
-        <Text style={styles.subtitle}>{`Welcome, ${employeeName}`}</Text>
+        <Text style={styles.subtitle}>{`Bienvenue, ${employeeName}`}</Text>
 
-          <Text style={styles.title}>{`Tasks for  ${employeeDepartment}  Department`}</Text>
+          <Text style={styles.title}>{`Tableau de bord pour le Département ${employeeDepartment} `}</Text>
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Tasks', { employeeDepartmentId,employeeDepartment,employeeId })}
           >
-            <Text style={styles.buttonText}>Add Task</Text>
+            <Text style={styles.buttonText}>Ajouter une tâche</Text>
           </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Attendance',{employeeId,employeeDepartment})}
           >
-            <Text style={styles.buttonText}>Add Attendance</Text>
+            <Text style={styles.buttonText}>Marquer votre présence</Text>
           </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => navigation.navigate('Reports', { employeeDepartmentId,employeeDepartment,employeeId,employeeName })}
           >
-            <Text style={styles.buttonText}>View Saved Tasks</Text>
+            <Text style={styles.buttonText}>Afficher les tâches enregistrées</Text>
           </Pressable>
           {/* Bouton de logout */}
           <Pressable style={styles.logoutButton} onPress={handleLogout}>

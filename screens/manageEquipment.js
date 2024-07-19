@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet ,Pressable} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet ,Pressable,Alert} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import api from '../api';
 
@@ -23,10 +23,37 @@ const ManageEquipment = () => {
     fetchEquipment();
   };
 
+  
   const handleDeleteEquipment = async (id) => {
-    await api.delete(`/equipment/${id}`);
-    fetchEquipment();
+    try {
+      await api.delete(`/equipment/${id}`);
+      Alert.alert('Succès', 'Article supprimé avec succès');
+      fetchEquipment();
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erreur', 'Échec de la suppression de l\'Article');
+    }
   };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirmation",
+      "Êtes-vous sûr de vouloir supprimer cet Article?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel"
+        },
+        {
+          text: "Supprimer",
+          onPress: () => handleDeleteEquipment(id)
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+ 
 
   return (
     <LinearGradient
@@ -40,12 +67,12 @@ const ManageEquipment = () => {
   
        <TextInput
         style={styles.input}
-        placeholder="Equipment Name"
+        placeholder="Nom de l'article"
         value={equipmentName}
         onChangeText={setEquipmentName}
       />
       <Pressable style={styles.button} onPress={handleAddEquipment}>
-            <Text style={styles.buttonText}> Add Equipment</Text>
+            <Text style={styles.buttonText}> Ajouter Article</Text>
         </Pressable>
       <FlatList
         data={equipment}
@@ -53,7 +80,7 @@ const ManageEquipment = () => {
         renderItem={({ item }) => (
           <View style={styles.equipmentItem}>
             <Text style={styles.text}>{item.name}</Text>
-            <Button title="Delete" onPress={() => handleDeleteEquipment(item.id)} />
+            <Button title="Delete" onPress={() => confirmDelete(item.id)} />
           </View>
         )}
       />

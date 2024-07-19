@@ -64,22 +64,40 @@ const ManageEmployeeAdmin = ({ route }) => {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/collaborators/${id}`);
-      Alert.alert('Success', 'Employee deleted successfully');
+      Alert.alert('Succès', 'Employée supprimé avec succès');
       fetchCollaborators();
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to delete employee');
+      Alert.alert('Erreur', 'Échec de la suppression du Employée');
     }
+  };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirmation",
+      "Êtes-vous sûr de vouloir supprimer cet employé?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel"
+        },
+        {
+          text: "Supprimer",
+          onPress: () => handleDelete(id)
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>{item.name}</Text>
       <Pressable style={styles.editButton} onPress={() => handleEdit(item)}>
-        <Text style={styles.buttonText}>Edit</Text>
+        <Text style={styles.buttonText}>Modifier</Text>
       </Pressable>
-      <Pressable style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
-        <Text style={styles.buttonText}>Delete</Text>
+      <Pressable style={styles.deleteButton} onPress={() => confirmDelete(item.id)}>
+        <Text style={styles.buttonText}>Supprimer</Text>
       </Pressable>
     </View>
   );
@@ -93,10 +111,10 @@ const ManageEmployeeAdmin = ({ route }) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Manage Employees</Text>
+          <Text style={styles.title}>Gérer les employés</Text>
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            placeholder="Nom"
             value={name}
             onChangeText={setName}
           />
@@ -108,24 +126,24 @@ const ManageEmployeeAdmin = ({ route }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             value={password}
             onChangeText={setpassword} 
           />
           <TextInput
             style={styles.input}
-            placeholder="phone number"
+            placeholder="Téléphone"
             value={phone_number}
             onChangeText={setphone_number}
           />
           <TextInput
             style={styles.input}
-            placeholder="department ID"
+            placeholder="ID département "
             value={department_id}
             onChangeText={setDepartment_id}
           />
           <Pressable style={styles.button} onPress={handleAddOrUpdateEmployee}>
-            <Text style={styles.buttonText}>{editingId ? 'Update Employee' : 'Add Employee'}</Text>
+            <Text style={styles.buttonText}>{editingId ? 'Modifier Employée' : 'Ajouter Employée'}</Text>
           </Pressable>
           <FlatList
             data={collaborators}
@@ -197,7 +215,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
   },
   itemText: {

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import api from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const ViewEmployeeAdmin = ({ route }) => {
+const ViewEmployeeAdmin = ({  }) => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
@@ -41,19 +41,19 @@ const ViewEmployeeAdmin = ({ route }) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Employee List</Text>
+          <Text style={styles.title}>Liste des Employées </Text>
           <FlatList
             data={employees}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.item}>
-                <Text>Name: {item.name}</Text>
+                <Text>Nom: {item.name}</Text>
                 <Text>Email: {item.email}</Text>
-                <Text>Phone: {item.phone_number}</Text>
-                <Text>Role: {item.role}</Text>
-                <Text>Password: {item.password}</Text>
-                <Text>Department Name: {getDepartmentName(item.department_id)}</Text>
-                
+                <Text>TéléPhone: {item.phone_number}</Text>
+                <Text>Role: Manager</Text>
+                <Text>Mot de passe: {item.password}</Text>
+                <Text>Nom de Département : {getDepartmentName(item.department_id)}</Text>
+
               </View>
             )}
           />

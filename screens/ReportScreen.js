@@ -198,9 +198,9 @@ const ReportsScreen = ({ route }) => {
       <FlatList
           ListHeaderComponent={
             <>
-              <Text style={styles.title}>Reports for {employeeName} - {employeeDepartment} Department</Text>
+              <Text style={styles.title}>Rapport de {employeeName} - Département {employeeDepartment} </Text>
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Tasks:</Text>
+                <Text style={styles.sectionTitle}>Tâches:</Text>
               </View>
             </>
           }
@@ -208,31 +208,31 @@ const ReportsScreen = ({ route }) => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <Text>{`Task Type: ${item.taskDefinitionName}`}</Text>
+              <Text>{`Type de tâche: ${item.taskDefinitionName}`}</Text>
               <Text>{`Client: ${item.client}`}</Text>
-              <Text>{`Location: ${item.location}`}</Text>
-              <Text>{`Start Time: ${item.start_time ? new Date(item.start_time).toLocaleString() : 'N/A'}`}</Text>
-              <Text>{`End Time: ${item.end_time ? new Date(item.end_time).toLocaleString() : 'N/A'}`}</Text>
-              <Text>{`Equipment: ${item.equipmentNames.join(', ')}`}</Text>
+              <Text>{`Emplacement: ${item.location}`}</Text>
+              <Text>{`Heure de début: ${item.start_time ? new Date(item.start_time).toLocaleString() : 'N/A'}`}</Text>
+              <Text>{`Heure de fin: ${item.end_time ? new Date(item.end_time).toLocaleString() : 'N/A'}`}</Text>
+              <Text>{`Article: ${item.equipmentNames.join(', ')}`}</Text>
             </View>
           )}
           ListFooterComponent={
             <>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Attendance:</Text>
+              <Text style={styles.sectionTitle}>Présence:</Text>
               {attendance.map((att) => (
                 <View key={att.id} style={styles.item}>
                   <Text style={styles.itemDetails}>Date: {att.date}</Text>
-                  <Text style={styles.itemDetails}>Status: {att.status}</Text>
+                  <Text style={styles.itemDetails}>Statut: {att.status}</Text>
                 </View>
               ))}
             </View>
             <Pressable style={styles.button} onPress={handleSaveReport}>
-          <Text style={styles.buttonText}>Save Report</Text>
+          <Text style={styles.buttonText}>Enregistrer le Rapport</Text>
         </Pressable>
             <Pressable style={styles.button} onPress={handleGeneratePDF}>
-            <Text style={styles.buttonText}>Generate PDF</Text>
+            <Text style={styles.buttonText}>Générer PDF</Text>
           </Pressable>
           </>  
           }

@@ -7,7 +7,7 @@ const ManageEmployeeScreen = ({ route }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone_number, setphone_number] = useState('');
-  const [password, setPassword] = useState(''); // Corrected to setPassword
+  const [password, setPassword] = useState(''); 
   const [collaborators, setCollaborators] = useState([]);
   const [department_id, setDepartment_id] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -56,7 +56,7 @@ const ManageEmployeeScreen = ({ route }) => {
   const handleEdit = (collaborator) => {
     setName(collaborator.name);
     setEmail(collaborator.email);
-    setPassword(collaborator.password); // Corrected to setPassword
+    setPassword(collaborator.password); 
     setphone_number(collaborator.phone_number);
     setDepartment_id(collaborator.department_id);
     setEditingId(collaborator.id);
@@ -65,22 +65,40 @@ const ManageEmployeeScreen = ({ route }) => {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/collaborators/${id}`);
-      Alert.alert('Success', 'Employee deleted successfully');
+      Alert.alert('Succès', 'Employée supprimé avec succès');
       fetchCollaborators();
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to delete employee');
+      Alert.alert('Erreur', 'Échec de la suppression du Employée');
     }
+  };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirmation",
+      "Êtes-vous sûr de vouloir supprimer cet employé?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel"
+        },
+        {
+          text: "Supprimer",
+          onPress: () => handleDelete(id)
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>{item.name}</Text>
       <Pressable style={styles.editButton} onPress={() => handleEdit(item)}>
-        <Text style={styles.buttonText}>Edit</Text>
+        <Text style={styles.buttonText}>Modifier</Text>
       </Pressable>
-      <Pressable style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
-        <Text style={styles.buttonText}>Delete</Text>
+      <Pressable style={styles.deleteButton} onPress={() => confirmDelete(item.id)}>
+        <Text style={styles.buttonText}>Supprimer</Text>
       </Pressable>
     </View>
   );
@@ -93,11 +111,12 @@ const ManageEmployeeScreen = ({ route }) => {
       style={styles.gradientBackground}
     >
       <View style={styles.overlay}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>Manage Employees</Text>
+      <View style={styles.container}>
+
+          <Text style={styles.title}>Gérer les employés</Text>
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            placeholder="Nom"
             value={name}
             onChangeText={setName}
           />
@@ -109,19 +128,19 @@ const ManageEmployeeScreen = ({ route }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             value={password}
             onChangeText={setPassword} 
           />
           <TextInput
             style={styles.input}
-            placeholder="phone_number"
+            placeholder="Téléphone"
             value={phone_number}
             onChangeText={setphone_number}
           />
-
+        
           <Pressable style={styles.button} onPress={handleAddOrUpdateEmployee}>
-            <Text style={styles.buttonText}>{editingId ? 'Update Employee' : 'Add Employee'}</Text>
+            <Text style={styles.buttonText}>{editingId ? 'Modifier Employée' : 'Ajouter Employée'}</Text>
           </Pressable>
           <FlatList
             data={collaborators}
@@ -129,7 +148,7 @@ const ManageEmployeeScreen = ({ route }) => {
             keyExtractor={(item) => item.id.toString()}
             style={styles.list}
           />
-        </ScrollView>
+      </View>
       </View>
     </LinearGradient>
   );
@@ -144,10 +163,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
   },
-  scrollContainer: {
-    justifyContent: 'Z',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    padding: 16,
     width: '100%',
   },
   title: {
@@ -176,7 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD700',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFF',
   },
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
   },
   itemText: {

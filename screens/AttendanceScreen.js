@@ -47,11 +47,11 @@ const AttendanceScreen = ({ route,navigation }) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Record Attendance</Text>
+          <Text style={styles.title}>Marquer votre présence</Text>
           <View style={styles.pickerContainer}>
           <Pressable onPress={() => setShowDatePicker(true)}>
             <Text style={styles.dateLabel}>
-              Selected Date: {selectedDate.toLocaleDateString()}
+              La Date choisis: {selectedDate.toLocaleDateString()}
             </Text>
           </Pressable>
           {showDatePicker && (
@@ -72,12 +72,12 @@ const AttendanceScreen = ({ route,navigation }) => {
               style={styles.picker}
             >
               <Picker.Item label="Select Status" value="" />
-              <Picker.Item label="Present" value="Present" />
+              <Picker.Item label="Présent" value="Present" />
               <Picker.Item label="Absent" value="Absent" />
             </Picker>
           </View>
           <Pressable style={styles.button} onPress={handleAddAttendance}>
-            <Text style={styles.buttonText}>Add Attendance</Text>
+            <Text style={styles.buttonText}>Ajouter la présence</Text>
           </Pressable>
         </View>
       </View>

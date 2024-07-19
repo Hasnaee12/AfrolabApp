@@ -71,7 +71,7 @@ const LoginScreen = ({ navigation, setUserRole }) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             value={password}
             onChangeText={setPassword}
             secureTextEntry

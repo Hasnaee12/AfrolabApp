@@ -100,7 +100,7 @@ const TaskScreen = ({ route, navigation }) => {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Text style={styles.title}>Add Tasks for {employeeDepartment} Department</Text>
+            <Text style={styles.title}>Ajouter les taches pour le département {employeeDepartment} </Text>
             <View
               style={{
                 marginTop: 20,
@@ -110,7 +110,25 @@ const TaskScreen = ({ route, navigation }) => {
                 borderRadius: 10,
               }}
             >
-              <Text style={styles.label}>Task Type</Text>
+              <View style={styles.taskDescriptionContainer}>
+                <Text style={styles.label}>Client</Text>
+                <TextInput
+                  style={styles.inputDescription}
+                  placeholder="Client"
+                  value={client}
+                  onChangeText={setClient}
+                />
+              </View>
+              <View style={styles.taskDescriptionContainer}>
+                <Text style={styles.label}>Emplacement</Text>
+                <TextInput
+                  style={styles.inputDescription}
+                  placeholder="Location"
+                  value={location}
+                  onChangeText={setLocation}
+                />
+              </View>
+              <Text style={styles.label}>Type de tâche</Text>
               <Picker
                 selectedValue={selectedTaskDefinition}
                 onValueChange={(itemValue) => setSelectedTaskDefinition(itemValue)}
@@ -123,7 +141,7 @@ const TaskScreen = ({ route, navigation }) => {
               </Picker>
               {employeeDepartmentId === 1 && (
                 <>
-                  <Text style={styles.label}>Equipment</Text>
+                  <Text style={styles.label}>Articles</Text>
                   {equipments.map((equipment) => (
                     <Pressable
                       key={equipment.id}
@@ -138,25 +156,8 @@ const TaskScreen = ({ route, navigation }) => {
                   ))}
                 </>
               )}
-              <View style={styles.taskDescriptionContainer}>
-                <Text style={styles.label}>Client</Text>
-                <TextInput
-                  style={styles.inputDescription}
-                  placeholder="Client"
-                  value={client}
-                  onChangeText={setClient}
-                />
-              </View>
-              <View style={styles.taskDescriptionContainer}>
-                <Text style={styles.label}>Location</Text>
-                <TextInput
-                  style={styles.inputDescription}
-                  placeholder="Location"
-                  value={location}
-                  onChangeText={setLocation}
-                />
-              </View>
-              <Text style={styles.label}>Start Time</Text>
+              
+              <Text style={styles.label}>Heure de début</Text>
               <Pressable onPress={() => setShowStartTimePicker(true)}>
                 <Text style={styles.inputDescription}>{startTime.toLocaleTimeString()}</Text>
               </Pressable>
@@ -172,7 +173,7 @@ const TaskScreen = ({ route, navigation }) => {
                   }}
                 />
               )}
-              <Text style={styles.label}>End Time</Text>
+              <Text style={styles.label}>Heure de fin</Text>
               <Pressable onPress={() => setShowEndTimePicker(true)}>
                 <Text style={styles.inputDescription}>{endTime.toLocaleTimeString()}</Text>
               </Pressable>
@@ -190,7 +191,7 @@ const TaskScreen = ({ route, navigation }) => {
               )}
             </View>
             <Pressable style={styles.button} onPress={handleSaveTasks}>
-              <Text style={styles.buttonText}>Save Tasks</Text>
+              <Text style={styles.buttonText}>Enregistrer le Rapport</Text>
             </Pressable>
           </ScrollView>
         </View>
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFF',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });

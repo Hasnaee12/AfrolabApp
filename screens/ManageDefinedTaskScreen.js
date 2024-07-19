@@ -53,14 +53,38 @@ const ManageDefinedTaskScreen = ({ route }) => {
     }
   };
 
+  
   const handleDeleteTask = async (id) => {
     try {
       await api.delete(`/task_definitions/${id}`);
+      Alert.alert('Succès', 'La Tache est supprimé avec succès');
       fetchTaskDefinitions(superuserDepartment);
+      
     } catch (error) {
       console.error(error);
+      Alert.alert('Erreur', 'Échec de la suppression de la Tache');
     }
   };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirmation",
+      "Êtes-vous sûr de vouloir supprimer cette Tache?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel"
+        },
+        {
+          text: "Supprimer",
+          onPress: () => handleDeleteTask(id)
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  
 
   return (
     <LinearGradient
@@ -71,26 +95,26 @@ const ManageDefinedTaskScreen = ({ route }) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Manage Defined Tasks</Text>
+          <Text style={styles.title}>Gérer les tâches définies</Text>
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Task Name"
+              placeholder="Nom de la tâche"
               value={newTask.name}
               onChangeText={(text) => setNewTask({ ...newTask, name: text, department_id: superuserDepartment })}
             />
             <Pressable style={styles.button} onPress={handleAddTask}>
-              <Text style={styles.buttonText}>Add Task</Text>
+              <Text style={styles.buttonText}>Ajouter</Text>
             </Pressable>
           </View>
-          <Text style={styles.subtitle}>Tasks list:</Text>
+          <Text style={styles.subtitle}>Liste des tâches:</Text>
           <FlatList
             data={taskDefinitions}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.taskItem}>
                 <Text>{item.name}</Text>
-                <Button title="Delete" onPress={() => handleDeleteTask(item.id)} />
+                <Button title="Supprimer"onPress={() => confirmDelete(item.id)} />
               </View>
             )}
           />
@@ -133,8 +157,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '70%',
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -159,6 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
   },

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import api from '../api';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const ViewEmployeeScreen = ({ route }) => {
+const ViewEmployeeScreen = ({ route = { params: { userDepartmentId: '' } } }) => {
   const [employees, setEmployees] = useState([]);
   const { userDepartmentId } = route.params;
 
@@ -19,19 +19,20 @@ const ViewEmployeeScreen = ({ route }) => {
     };
     fetchEmployees();
   }, []);
-// Function to get the department name based on the department ID
-const getDepartmentName = (departmentId) => {
-  switch(departmentId) {
-    case 1:
-      return 'Technique';
-    case 2:
-      return 'Commercial';
-    case 3:
-      return 'Financier';
-    default:
-      return 'Unknown';
-  }
-};
+
+  // Function to get the department name based on the department ID
+  const getDepartmentName = (departmentId) => {
+    switch(departmentId) {
+      case 1:
+        return 'Technique';
+      case 2:
+        return 'Commercial';
+      case 3:
+        return 'Financier';
+      default:
+        return 'Unknown';
+    }
+  };
 
   return (
     <LinearGradient
@@ -42,18 +43,18 @@ const getDepartmentName = (departmentId) => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Employee List</Text>
+          <Text style={styles.title}>Liste des Employées </Text>
           <FlatList
             data={employees}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.item}>
-                <Text>Name: {item.name}</Text>
+                <Text>Nom: {item.name}</Text>
                 <Text>Email: {item.email}</Text>
-                <Text>Phone: {item.phone_number}</Text>
-                <Text>Role: {item.role}</Text>
-                <Text>Password: {item.password}</Text>
-                <Text>Department: {getDepartmentName(item.department_id)}</Text>
+                <Text>TéléPhone: {item.phone_number}</Text>
+                <Text>Role: Manager</Text>
+                <Text>Mot de passe: {item.password}</Text>
+                <Text>Nom de Département : {getDepartmentName(item.department_id)}</Text>
               </View>
             )}
           />
@@ -61,10 +62,6 @@ const getDepartmentName = (departmentId) => {
       </View>
     </LinearGradient>
   );
-};
-
-ViewEmployeeScreen.defaultProps = {
-  userDepartmentId: '', // Valeur par défaut si le prop n'est pas fourni
 };
 
 const styles = StyleSheet.create({

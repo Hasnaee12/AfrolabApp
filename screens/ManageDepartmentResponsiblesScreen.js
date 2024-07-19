@@ -22,7 +22,7 @@ const ManageDepartmentResponsiblesScreen = () => {
       setResponsibles(response.data);
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to fetch department responsibles');
+      Alert.alert('Erreur', 'Échec de la récupération des responsables de département');
     }
   };
 
@@ -32,10 +32,10 @@ const ManageDepartmentResponsiblesScreen = () => {
       console.log('Sending data:', collaboratorData);
       if (editingId) {
         await api.put(`/collaborators/${editingId}`, collaboratorData);
-        Alert.alert('Success', 'Employee updated successfully');
+        Alert.alert('Succès', 'Employé mis à jour avec succès');
       } else {
         await api.post('/collaborators', collaboratorData);
-        Alert.alert('Success', 'Employee added successfully');
+        Alert.alert('Succès', 'Employé ajouté avec succès');
       }
 
       setName('');
@@ -47,7 +47,7 @@ const ManageDepartmentResponsiblesScreen = () => {
       fetchResponsibles();
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', editingId ? 'Failed to update department responsible' : 'Failed to add department responsible');
+      Alert.alert('Erreur', editingId ? 'Échec de la mise à jour du responsable de département' : 'Échec de l\'ajout du responsable de département');
     }
   };
 
@@ -63,22 +63,40 @@ const ManageDepartmentResponsiblesScreen = () => {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/collaborators/${id}`);
-      Alert.alert('Success', 'Department Responsible deleted successfully');
+      Alert.alert('Succès', 'Responsable de département supprimé avec succès');
       fetchResponsibles();
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to delete department responsible');
+      Alert.alert('Erreur', 'Échec de la suppression du responsable de département');
     }
+  };
+
+  const confirmDelete = (id) => {
+    Alert.alert(
+      "Confirmation",
+      "Êtes-vous sûr de vouloir supprimer ce responsable?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel"
+        },
+        {
+          text: "Supprimer",
+          onPress: () => handleDelete(id)
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>{item.name}</Text>
       <Pressable style={styles.editButton} onPress={() => handleEdit(item)}>
-        <Text style={styles.buttonText}>Edit</Text>
+        <Text style={styles.buttonText}>Modifier</Text>
       </Pressable>
-      <Pressable style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
-        <Text style={styles.buttonText}>Delete</Text>
+      <Pressable style={styles.deleteButton} onPress={() => confirmDelete(item.id)}>
+        <Text style={styles.buttonText}>Supprimer</Text>
       </Pressable>
     </View>
   );
@@ -92,10 +110,10 @@ const ManageDepartmentResponsiblesScreen = () => {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.title}>Manage Department Managers</Text>
+          <Text style={styles.title}>Gérer les chefs de département</Text>
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            placeholder="Nom"
             value={name}
             onChangeText={setName}
           />
@@ -107,24 +125,24 @@ const ManageDepartmentResponsiblesScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             value={password}
             onChangeText={setpassword} 
           />
           <TextInput
             style={styles.input}
-            placeholder="phone number"
+            placeholder="Téléphone "
             value={phone_number}
             onChangeText={setphone_number}
           />
           <TextInput
             style={styles.input}
-            placeholder="department ID"
+            placeholder="ID de département"
             value={department_id}
             onChangeText={setDepartment_id}
           />
           <Pressable style={styles.button} onPress={handleAddOrUpdateResponsible}>
-            <Text style={styles.buttonText}>{editingId ? 'Update Responsible' : 'Add Responsible'}</Text>
+            <Text style={styles.buttonText}>{editingId ? 'Modifier chef de département' : 'Ajouter chef de département'}</Text>
           </Pressable>
           
           <FlatList
@@ -166,7 +184,7 @@ const styles = StyleSheet.create({
   input: {
     width: '80%',
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -181,7 +199,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD700',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFF',
   },
@@ -197,7 +215,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
   },
   itemText: {
