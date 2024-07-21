@@ -18,6 +18,8 @@ const TaskScreen = ({ route, navigation }) => {
   const [selectedEquipments, setSelectedEquipments] = useState([]);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [taskDate, setTaskDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -47,18 +49,23 @@ const TaskScreen = ({ route, navigation }) => {
         const seconds = date.getSeconds().toString().padStart(2, '0');
         return `${hours}:${minutes}:${seconds}`;
       };
-      // Debugging: Log formatted times
-      console.log("Formatted start time:", formatTime(startTime));
-      console.log("Formatted end time:", formatTime(endTime));
+
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
 
       const task = {
         task_definition_id: selectedTaskDefinition,
-        equipment_ids: employeeDepartmentId === 1 & selectedEquipments,
+        equipment_ids: employeeDepartmentId === 1 ? selectedEquipments : [],
         client,
         location,
         start_time: formatTime(startTime),
         end_time: formatTime(endTime),
         collaborator_id: employeeId,
+        date: formatDate(taskDate),
       };
 
       const response = await api.post('/tasks', {
@@ -74,6 +81,7 @@ const TaskScreen = ({ route, navigation }) => {
         setLocation('');
         setStartTime(new Date());
         setEndTime(new Date());
+        setTaskDate(new Date());
         navigation.navigate('Reports',{employeeDepartmentId, employeeDepartment, employeeId});
       }
     } catch (error) {
@@ -128,6 +136,7 @@ const TaskScreen = ({ route, navigation }) => {
                   onChangeText={setLocation}
                 />
               </View>
+              
               <Text style={styles.label}>Type de tâche</Text>
               <Picker
                 selectedValue={selectedTaskDefinition}
@@ -156,7 +165,21 @@ const TaskScreen = ({ route, navigation }) => {
                   ))}
                 </>
               )}
-              
+              <Text style={styles.label}>Date de la tâche</Text>
+              <Pressable onPress={() => setShowDatePicker(true)}>
+                <Text style={styles.inputDescription}>{taskDate.toLocaleDateString()}</Text>
+              </Pressable>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={taskDate}
+                  mode="date"
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    setShowDatePicker(false);
+                    setTaskDate(selectedDate || taskDate);
+                  }}
+                />
+              )}
               <Text style={styles.label}>Heure de début</Text>
               <Pressable onPress={() => setShowStartTimePicker(true)}>
                 <Text style={styles.inputDescription}>{startTime.toLocaleTimeString()}</Text>
@@ -191,7 +214,7 @@ const TaskScreen = ({ route, navigation }) => {
               )}
             </View>
             <Pressable style={styles.button} onPress={handleSaveTasks}>
-              <Text style={styles.buttonText}>Enregistrer le Rapport</Text>
+              <Text style={styles.buttonText}>Enregistrer la tache</Text>
             </Pressable>
           </ScrollView>
         </View>
@@ -230,60 +253,62 @@ const styles = StyleSheet.create({
   pickerContainer: {
     height: 50,
     width: '100%',
-    marginBottom: 2,
-    backgroundColor: '#FFF',
+    backgroundColor: 'white',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#000',
-    paddingLeft: 8,
-    paddingRight: 8,
-    color: '#000',
+    borderColor: '#aaa',
+    marginBottom: 20,
   },
   pickerItem: {
     fontSize: 16,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: '#FFD700',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  inputDescription: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    marginBottom: 10,
+  },
+  taskDescriptionContainer: {
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
     color: '#000',
   },
   equipmentItem: {
-    marginTop: 8,
-    padding: 10,
-    borderColor: '#000',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
     borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: '#FFF',
+    borderColor: '#aaa',
+    marginBottom: 10,
+    backgroundColor: 'white',
   },
   selectedEquipment: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#0BECFB',
   },
   equipmentText: {
+    fontSize: 16,
     color: '#000',
-  },
-  inputDescription: {
-    marginTop: 8,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    color: '#000',
-  },
-  taskDescriptionContainer: {
-    marginTop: 8,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 5,
-  },
-  button: {
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 10,
-    alignItems: 'center',
-    backgroundColor: '#FFD700',
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });
 

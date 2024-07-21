@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable,Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, StyleSheet, FlatList, Pressable, Alert } from 'react-native';
 import * as Print from 'expo-print';
+import { LinearGradient } from 'expo-linear-gradient';
 import { shareAsync } from 'expo-sharing';
 import api from '../api';
 
-const ReportsScreen = ({ route }) => {
+const ReportDetailsScreen = ({ route }) => {
   const [tasks, setTasks] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [adminName, setAdminName] = useState('');
   const [supervisorName, setSupervisorName] = useState('');
-  const { employeeDepartmentId, employeeDepartment, employeeId,employeeName } = route.params;
+  const [Day, setDay] = useState('');
+  const { employeeName,employeeId, employeeDepartment,date ,departmentID} = route.params;
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
         // Fetch tasks
         const tasksResponse = await api.get(`/tasks?collaborator_id=${employeeId}`);
-        const today = new Date().toISOString().split('T')[0];
-
+        const day = date.toISOString().split('T')[0];
+        setDay(day);
         const tasksWithDetails = await Promise.all(tasksResponse.data.map(async task => {
           const taskDefinitionResponse = await api.get(`/task_definitions?id=${task.task_definition_id}`);
           const equipmentNames = await Promise.all(task.equipment_ids.map(async eid => {
@@ -28,24 +29,23 @@ const ReportsScreen = ({ route }) => {
 
           return {
             ...task,
-            taskDefinitionName: taskDefinitionResponse.data[0]?.name ?? 'Unknown Task', // Handle empty response
+            taskDefinitionName: taskDefinitionResponse.data[0]?.name ?? 'Unknown Task',
             equipmentNames,
           };
         }));
-         // Filter tasks to only include those from today
-         const filteredTasks = tasksWithDetails.filter(task => {
+        // Filter tasks to only include those from day
+        const filteredTasks = tasksWithDetails.filter(task => {
           const taskDate = new Date(task.date).toISOString().split('T')[0];
-          return taskDate === today;
+          return taskDate === day;
         });
         setTasks(filteredTasks);
-
-        // Fetch attendance
-        const attendanceResponse = await api.get(`/attendance?collaborator_id=${employeeId}`);
-        const filteredAttendance = attendanceResponse.data.filter(record => {
-          const attendanceDate = new Date(record.date).toISOString().split('T')[0];
-          return attendanceDate === today;
-        });
-        setAttendance(filteredAttendance);
+         // Fetch attendance
+         const attendanceResponse = await api.get(`/attendance?collaborator_id=${employeeId}`);
+         const filteredAttendance = attendanceResponse.data.filter(record => {
+           const attendanceDate = new Date(record.date).toISOString().split('T')[0];
+           return attendanceDate === day;
+         });
+         setAttendance(filteredAttendance);
         // Fetch user info
         await fetchUserInfo();
       } catch (error) {
@@ -54,14 +54,15 @@ const ReportsScreen = ({ route }) => {
     };
 
     fetchReports();
-  }, []);
+  }, [employeeId, date]);
+
   const fetchUserInfo = async () => {
     try {
       const collaboratorsResponse = await api.get(`/collaborators?role=admin`);
       setAdminName(collaboratorsResponse.data[0]?.name || 'Unknown Admin');
 
       const supervisorsResponse = await api.get(`/collaborators?role=superuser`);
-      const supervisor = supervisorsResponse.data.find(supervisor => supervisor.department_id === employeeDepartmentId);
+      const supervisor = supervisorsResponse.data.find(supervisor => supervisor.department_id === departmentID);
       setSupervisorName(supervisor?.name || 'Unknown Supervisor');
     } catch (error) {
       console.error(error);
@@ -156,7 +157,7 @@ const ReportsScreen = ({ route }) => {
         <div class="container">
           <img src="https://th.bing.com/th/id/R.11147171891cc31010c40d397a4d38a2?rik=x4zcSWOM4rLTQQ&riu=http%3a%2f%2fwww.afrolab.ma%2fwp-content%2fthemes%2ftheme%2fimg%2fafrolab.jpg&ehk=b%2bMAECMgGbdB5p0ZVR3j7HfQxExUM8DR1nGiJcqFVOk%3d&risl=&pid=ImgRaw&r=0" alt="Afrolab Logo" class="logo">
           <h1 class="title">Rapport Quotidien des Tâches</h1>
-          <p class="subtitle">Date: ${new Date().toLocaleDateString()}</p>
+          <p class="subtitle">Date: ${Day}</p>
           <p class="subtitle">Représentant d’administration (admin) : M. ${adminName}</p>
           <p class="subtitle">Nom de l'Employé: ${employeeName}</p>
           <p class="subtitle">Département: ${employeeDepartment}</p>
@@ -194,34 +195,18 @@ const ReportsScreen = ({ route }) => {
         </div>
       </body>
     </html>
-  `;
+    `;
 
     try {
       const { uri } = await Print.printToFileAsync({ html });
-      await shareAsync(uri);
+      await shareAsync(uri, { mimeType: 'application/pdf' });
     } catch (error) {
       console.error('Error generating PDF:', error);
       Alert.alert('Error', 'An error occurred while generating the PDF');
     }
   };
-  const handleSaveReport = async () => {
-    const report = {
-      date: new Date(),
-      tasks,
-      attendance,
-      collaborator_id: employeeId,
-    };
 
-    try {
-      await api.post('/reports', report);
-      Alert.alert('Success', 'Report saved successfully');
-    } catch (error) {
-      console.error('Error saving report:', error);
-      Alert.alert('Error', 'An error occurred while saving the report');
-    }
-  };
   return (
-   
     <LinearGradient
       colors={['#FF8C04', '#0BECFB']}
       start={{ x: 0, y: 0 }}
@@ -232,7 +217,7 @@ const ReportsScreen = ({ route }) => {
       <FlatList
           ListHeaderComponent={
             <>
-              <Text style={styles.title}>Rapport de {employeeName} - Département {employeeDepartment} </Text>
+              <Text style={styles.title}>Rapport de {employeeName} - Département {employeeDepartment} - jour {Day} </Text>
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Tâches:</Text>
               </View>
@@ -264,21 +249,17 @@ const ReportsScreen = ({ route }) => {
               ))}
             </View>
             <View style={styles.footer}>
-            <View style={styles.buttonsContainer}>
               <Pressable style={styles.button} onPress={handleGeneratePDF}>
                 <Text style={styles.buttonText}>Générer le PDF</Text>
               </Pressable>
-              <Pressable style={styles.button} onPress={handleSaveReport}>
-                <Text style={styles.buttonText}>Enregistrer le Rapport</Text>
-              </Pressable>
             </View>
-          </View>
+
           </>  
           }
         />
       </View>
     </LinearGradient>
-    
+      
   );
 };
 
@@ -289,9 +270,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
+    marginTop: 20,
     backgroundColor: '#FFD700',
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     borderRadius: 10,
+    marginBottom: 20,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   buttonText: {
     color: '#fff',
@@ -356,4 +344,4 @@ overlay: {
   },
 });
 
-export default ReportsScreen;
+export default ReportDetailsScreen;

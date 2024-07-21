@@ -50,7 +50,7 @@ const ViewEmployeeAdmin = ({  }) => {
                 <Text>Nom: {item.name}</Text>
                 <Text>Email: {item.email}</Text>
                 <Text>TéléPhone: {item.phone_number}</Text>
-                <Text>Role: Manager</Text>
+                <Text>Role: Employée</Text>
                 <Text>Mot de passe: {item.password}</Text>
                 <Text>Nom de Département : {getDepartmentName(item.department_id)}</Text>
 

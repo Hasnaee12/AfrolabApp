@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screens/LoginScreen';
-import DepartmentScreen from './screens/DepartmentScreen';
+import ReportSelectionScreen from './screens/ReportSelectionScreen';
 import HomeScreen from './screens/HomeScreen';
 import TaskScreen from './screens/TaskScreen';
 import AttendanceScreen from './screens/AttendanceScreen';
@@ -13,7 +13,7 @@ import ViewEmployeeScreen from './screens/ViewEmployeeScreen';
 import ManageEmployeeScreen from './screens/ManageEmployeeScreen';
 import ViewDepartmentResponsiblesScreen from './screens/ViewDepartmentResponsiblesScreen';
 import ManageDepartmentResponsiblesScreen from './screens/ManageDepartmentResponsiblesScreen';
-import ViewReportsScreen from './screens/ViewReportsScreen';
+import ReportDetailsScreen from './screens/ReportDetailsScreen';
 import HomeScreenSuperuser from './screens/HomeScreenSuperuser';
 import ManageDefinedTaskScreen from './screens/ManageDefinedTaskScreen';
 import ManageEquipment from './screens/manageEquipment';
@@ -45,7 +45,6 @@ export default function App() {
         <Stack.Screen name="Login">
           {props => <LoginScreen {...props} setUserRole={setUserRole} />}
         </Stack.Screen>
-        <Stack.Screen name="Department" component={DepartmentScreen} />
         <Stack.Screen name="Home" component={getHomeScreen()} />
         <Stack.Screen name="Tasks" component={TaskScreen} />
         <Stack.Screen name="Attendance" component={AttendanceScreen} />
@@ -59,7 +58,8 @@ export default function App() {
             <Stack.Screen name="ViewEmployeeAdmin" component={ViewEmployeeAdmin} />
             <Stack.Screen name="ManageEmployeeAdmin" component={ManageEmployeeAdmin} />
             <Stack.Screen name="ManageEquipment" component={ManageEquipment} />
-            <Stack.Screen name="ViewReportsAdmin" component={ViewReportsScreen} />
+            <Stack.Screen name="ReportSelectionScreenAdmin" component={ReportSelectionScreen} />
+            <Stack.Screen name="ReportDetailsScreen" component={ReportDetailsScreen} />
           </>
         )}
         {/* Superuser Screens */}
@@ -69,7 +69,8 @@ export default function App() {
             <Stack.Screen name="ViewEmployeeSuperuser" component={ViewEmployeeScreen} />
             <Stack.Screen name="ManageEmployeeSuperuser" component={ManageEmployeeScreen} />
             <Stack.Screen name="ManageDefinedTask" component={ManageDefinedTaskScreen} />
-            <Stack.Screen name="ViewReportsSuperuser" component={ViewReportsScreen} />
+            <Stack.Screen name="ReportSelectionScreensuperuser" component={ReportSelectionScreen} />
+            <Stack.Screen name="ReportDetailsScreen" component={ReportDetailsScreen} />
           </>
         )}
       </Stack.Navigator>

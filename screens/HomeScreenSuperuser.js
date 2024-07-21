@@ -61,7 +61,7 @@ const HomeScreenSuperuser = ({ navigation,route }) => {
               <Pressable style={styles.button} onPress={() => navigateTo('ManageDefinedTask')}>
                 <Text style={styles.buttonText}>Gérer les tâches définies</Text>
               </Pressable>
-              <Pressable style={styles.button} onPress={() => navigateTo('ViewReportsSuperuser')}>
+              <Pressable style={styles.button} onPress={() => navigateTo('ReportSelectionScreensuperuser')}>
                 <Text style={styles.buttonText}>Afficher les rapports</Text>
               </Pressable>
                {/* Bouton de logout */}

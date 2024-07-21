@@ -59,7 +59,7 @@ const HomeScreenAdmin = ({ route,navigation }) => {
               <Pressable style={styles.button} onPress={() => navigateTo('ManageEquipment')}>
                 <Text style={styles.buttonText}>Gérer les Articles</Text>
               </Pressable>
-              <Pressable style={styles.button} onPress={() => navigateTo('ViewReportsAdmin')}>
+              <Pressable style={styles.button} onPress={() => navigateTo('ReportSelectionScreenAdmin')}>
                 <Text style={styles.buttonText}>Voir les rapports</Text>
               </Pressable>
               {/* Bouton de logout */}
