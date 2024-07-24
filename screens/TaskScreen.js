@@ -16,6 +16,7 @@ const TaskScreen = ({ route, navigation }) => {
   const [endTime, setEndTime] = useState(new Date());
   const [selectedTaskDefinition, setSelectedTaskDefinition] = useState('');
   const [selectedEquipments, setSelectedEquipments] = useState([]);
+  const [usageCounts, setUsageCounts] = useState({});
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [taskDate, setTaskDate] = useState(new Date());
@@ -56,10 +57,14 @@ const TaskScreen = ({ route, navigation }) => {
         const day = date.getDate().toString().padStart(2, '0');
         return `${year}-${month}-${day}`;
       };
+      const equipmentData = selectedEquipments.map(equipmentId => ({
+        equipment_id: equipmentId,
+        usage_count: usageCounts[equipmentId] || 1,
+      }));
 
       const task = {
         task_definition_id: selectedTaskDefinition,
-        equipment_ids: employeeDepartmentId === 1 ? selectedEquipments : [],
+        equipment_data: employeeDepartmentId === 1 ? equipmentData : [],
         client,
         location,
         start_time: formatTime(startTime),
@@ -77,6 +82,7 @@ const TaskScreen = ({ route, navigation }) => {
         Alert.alert('Success', 'Task saved successfully');
         setSelectedTaskDefinition('');
         setSelectedEquipments([]);
+        setUsageCounts({});
         setClient('');
         setLocation('');
         setStartTime(new Date());
@@ -93,10 +99,16 @@ const TaskScreen = ({ route, navigation }) => {
   const handleSelectEquipment = (equipmentId) => {
     if (selectedEquipments.includes(equipmentId)) {
       setSelectedEquipments(selectedEquipments.filter(id => id !== equipmentId));
+      const newUsageCounts = { ...usageCounts };
+      delete newUsageCounts[equipmentId];
     } else {
       setSelectedEquipments([...selectedEquipments, equipmentId]);
     }
   };
+  const handleUsageCountChange = (equipmentId, count) => {
+    setUsageCounts({ ...usageCounts, [equipmentId]: count });
+  };
+
 
   return (
     <LinearGradient
@@ -151,17 +163,28 @@ const TaskScreen = ({ route, navigation }) => {
               {employeeDepartmentId === 1 && (
                 <>
                   <Text style={styles.label}>Articles</Text>
-                  {equipments.map((equipment) => (
-                    <Pressable
-                      key={equipment.id}
-                      style={[
-                        styles.equipmentItem,
-                        selectedEquipments.includes(equipment.id) && styles.selectedEquipment,
-                      ]}
-                      onPress={() => handleSelectEquipment(equipment.id)}
-                    >
-                      <Text style={styles.equipmentText}>{equipment.name}</Text>
-                    </Pressable>
+                  <Picker
+                    selectedValue={selectedEquipments[0]}
+                    onValueChange={(itemValue) => handleSelectEquipment(itemValue)}
+                    style={styles.pickerContainer}
+                    itemStyle={styles.pickerItem}
+                  >
+                    <Picker.Item label="Select Equipment" value="" />
+                    {equipments.map((equipment) => (
+                      <Picker.Item key={equipment.id} label={equipment.name} value={equipment.id} />
+                    ))}
+                  </Picker>
+                  {selectedEquipments.map(equipmentId => (
+                    <View key={equipmentId} style={styles.equipmentContainer}>
+                      <Text style={styles.equipmentText}>{equipments.find(e => e.id === equipmentId)?.name}</Text>
+                      <TextInput
+                        style={styles.usageInput}
+                        placeholder="Usage Count"
+                        keyboardType="numeric"
+                        value={usageCounts[equipmentId]?.toString() || ''}
+                        onChangeText={(value) => handleUsageCountChange(equipmentId, parseInt(value, 10))}
+                      />
+                    </View>
                   ))}
                 </>
               )}
@@ -256,7 +279,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#aaa',
+    borderColor: 'gray',
     marginBottom: 20,
   },
   pickerItem: {
@@ -282,7 +305,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#aaa',
+    borderColor: 'gray',
     marginBottom: 10,
   },
   taskDescriptionContainer: {
@@ -302,13 +325,25 @@ const styles = StyleSheet.create({
     borderColor: '#aaa',
     marginBottom: 10,
     backgroundColor: 'white',
-  },
-  selectedEquipment: {
-    backgroundColor: '#0BECFB',
+  },equipmentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   equipmentText: {
-    fontSize: 16,
-    color: '#000',
+    flex: 1,
+    fontSize: 18,
+    color: 'black',
+  },
+  usageInput: {
+    width: 100,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    backgroundColor: 'white',
+    marginLeft: 10,
   },
 });
 

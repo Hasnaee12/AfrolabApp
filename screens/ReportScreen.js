@@ -10,30 +10,46 @@ const ReportsScreen = ({ route }) => {
   const [attendance, setAttendance] = useState([]);
   const [adminName, setAdminName] = useState('');
   const [supervisorName, setSupervisorName] = useState('');
+  const [Day, setDay] = useState('');
   const { employeeDepartmentId, employeeDepartment, employeeId,employeeName } = route.params;
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
         // Fetch tasks
+        
         const tasksResponse = await api.get(`/tasks?collaborator_id=${employeeId}`);
         const today = new Date().toISOString().split('T')[0];
+        setDay(today);
 
         const tasksWithDetails = await Promise.all(tasksResponse.data.map(async task => {
           const taskDefinitionResponse = await api.get(`/task_definitions?id=${task.task_definition_id}`);
-          const equipmentNames = await Promise.all(task.equipment_ids.map(async eid => {
-            const equipmentResponse = await api.get(`/equipment?id=${eid}`);
-            return equipmentResponse.data[0]?.name ?? 'Unknown Equipment';  // Handle empty response
-          }));
+          const equipmentData = task.equipment_data || [];
+          const equipmentIds = equipmentData.map(e => e.equipment_id).filter(id => id !== undefined);
+
+          const equipmentUsage = await Promise.all(equipmentIds.map(async (eid) => {
+            try {
+              const equipmentResponse = await api.get(`/equipment?id=${eid}`);
+              return {
+                name: equipmentResponse.data[0]?.name || 'Nom inconnu',
+            id: equipmentResponse.data[0]?.id || 'ID inconnu',
+                usageCount: equipmentData.find(e => e.equipment_id === eid).usage_count || 0 ,
+              };
+            } catch (error) {
+              console.error(`Error fetching equipment with id ${eid}:`, error);
+              return null;
+            }
+          })).then(results => results.filter(result => result !== null));
 
           return {
             ...task,
-            taskDefinitionName: taskDefinitionResponse.data[0]?.name ?? 'Unknown Task', // Handle empty response
-            equipmentNames,
+            taskDefinitionName: taskDefinitionResponse.data[0]?.name ?? 'Unknown Task',
+            equipmentDetails: equipmentUsage,
           };
         }));
-         // Filter tasks to only include those from today
-         const filteredTasks = tasksWithDetails.filter(task => {
+
+        // Filter tasks to only include those from today
+        const filteredTasks = tasksWithDetails.filter(task => {
           const taskDate = new Date(task.date).toISOString().split('T')[0];
           return taskDate === today;
         });
@@ -178,7 +194,7 @@ const ReportsScreen = ({ route }) => {
               <p><strong>Lieu:</strong> ${task.location}</p>
               <p><strong>Type de Tâche:</strong> ${task.taskDefinitionName}</p>
               <p><strong>Heure:</strong> de ${formatTime(task.start_time )} à ${formatTime(task.end_time)}</p>
-              <p><strong>Équipements utilisés:</strong> ${task.equipmentNames.join(', ')}</p>
+              <p><strong>Article utilisés:</strong> ${task.equipmentDetails.map(eq => `${eq.name} (Utilisation: ${eq.usageCount})`).join(', ')}</p>
             </div>
           `).join('')}
           
@@ -232,7 +248,10 @@ const ReportsScreen = ({ route }) => {
       <FlatList
           ListHeaderComponent={
             <>
-              <Text style={styles.title}>Rapport de {employeeName} - Département {employeeDepartment} </Text>
+              <Text style={styles.title}>Rapport Quotidien</Text>
+              <Text style={styles.subtitle}>Nom de l'Employé: {employeeName}</Text>
+              <Text style={styles.subtitle}>Département: {employeeDepartment}</Text>
+              <Text style={styles.subtitle}>Date: {Day}</Text>              
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Tâches:</Text>
               </View>
@@ -248,9 +267,10 @@ const ReportsScreen = ({ route }) => {
               <Text>{`Date: ${item.date ? new Date(item.date).toLocaleString() : 'N/A'}`}</Text>
               <Text>{`Heure de début: ${formatTime(item.start_time )}`}</Text>
               <Text>{`Heure de fin: ${formatTime(item.end_time )}`}</Text>
-              <Text>{`Article: ${item.equipmentNames.join(', ')}`}</Text>
+              <Text>{`Article utilisés: ${item.equipmentDetails.map(eq => `${eq.name} (Utilisation: ${eq.usageCount})`).join(', ')}`}</Text>
             </View>
           )}
+          ListEmptyComponent={<Text style={styles.emptyText}>Aucune tâche trouvée pour aujourd'hui.</Text>}
           ListFooterComponent={
             <>
 
@@ -262,6 +282,7 @@ const ReportsScreen = ({ route }) => {
                   <Text style={styles.itemDetails}>Statut: {att.status}</Text>
                 </View>
               ))}
+
             </View>
             <View style={styles.footer}>
             <View style={styles.buttonsContainer}>
@@ -275,6 +296,7 @@ const ReportsScreen = ({ route }) => {
           </View>
           </>  
           }
+
         />
       </View>
     </LinearGradient>
@@ -298,10 +320,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  emptyText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'center',
+    marginTop: 16,
+  },
   buttonsContainer: {
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 8,
+    color: '#eee',
+    fontWeight: 'bold',
+
   },
 overlay: {
     ...StyleSheet.absoluteFillObject,
