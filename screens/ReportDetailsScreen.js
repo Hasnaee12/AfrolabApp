@@ -22,15 +22,27 @@ const ReportDetailsScreen = ({ route }) => {
         setDay(day);
         const tasksWithDetails = await Promise.all(tasksResponse.data.map(async task => {
           const taskDefinitionResponse = await api.get(`/task_definitions?id=${task.task_definition_id}`);
-          const equipmentNames = await Promise.all(task.equipment_ids.map(async eid => {
-            const equipmentResponse = await api.get(`/equipment?id=${eid}`);
-            return equipmentResponse.data[0]?.name ?? 'Unknown Equipment';  // Handle empty response
-          }));
+          const equipmentData = task.equipment_data || [];
+          const equipmentIds = equipmentData.map(e => e.equipment_id).filter(id => id !== undefined);
+
+          const equipmentUsage = await Promise.all(equipmentIds.map(async (eid) => {
+            try {
+              const equipmentResponse = await api.get(`/equipment?id=${eid}`);
+              return {
+                name: equipmentResponse.data[0]?.name || 'Nom inconnu',
+            id: equipmentResponse.data[0]?.id || 'ID inconnu',
+                usageCount: equipmentData.find(e => e.equipment_id === eid).usage_count || 0 ,
+              };
+            } catch (error) {
+              console.error(`Error fetching equipment with id ${eid}:`, error);
+              return null;
+            }
+          })).then(results => results.filter(result => result !== null));
 
           return {
             ...task,
             taskDefinitionName: taskDefinitionResponse.data[0]?.name ?? 'Unknown Task',
-            equipmentNames,
+            equipmentDetails: equipmentUsage,
           };
         }));
         // Filter tasks to only include those from day
@@ -179,7 +191,7 @@ const ReportDetailsScreen = ({ route }) => {
               <p><strong>Lieu:</strong> ${task.location}</p>
               <p><strong>Type de Tâche:</strong> ${task.taskDefinitionName}</p>
               <p><strong>Heure:</strong> de ${formatTime(task.start_time )} à ${formatTime(task.end_time)}</p>
-              <p><strong>Équipements utilisés:</strong> ${task.equipmentNames.join(', ')}</p>
+              <p><strong>Article utilisés:</strong> ${task.equipmentDetails.map(eq => `${eq.name} (Utilisation: ${eq.usageCount})`).join(', ')}</p>
             </div>
           `).join('')}
           
@@ -233,9 +245,10 @@ const ReportDetailsScreen = ({ route }) => {
               <Text>{`Date: ${item.date ? new Date(item.date).toLocaleString() : 'N/A'}`}</Text>
               <Text>{`Heure de début: ${formatTime(item.start_time )}`}</Text>
               <Text>{`Heure de fin: ${formatTime(item.end_time )}`}</Text>
-              <Text>{`Article: ${item.equipmentNames.join(', ')}`}</Text>
+              <Text>{`Article utilisés: ${item.equipmentDetails.map(eq => `${eq.name} (Utilisation: ${eq.usageCount})`).join(', ')}`}</Text>
             </View>
           )}
+          ListEmptyComponent={<Text style={styles.emptyText}>Aucune tâche trouvée pour aujourd'hui.</Text>}
           ListFooterComponent={
             <>
 
@@ -290,6 +303,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'center',
+    marginTop: 16,
   },
 overlay: {
     ...StyleSheet.absoluteFillObject,

@@ -21,7 +21,7 @@ const ReportSelectionScreen = ({ navigation }) => {
         const response = await api.get('/departments');
         setDepartments(response.data);
         const department = response.data.find(department => department.id === selectedDepartment);
-          setemployeeDepartment(department?.name || 'Unknown department')
+          setemployeeDepartment(department?.name || 'Unknown ')
       } catch (error) {
         console.error('Error fetching departments:', error);
       }
